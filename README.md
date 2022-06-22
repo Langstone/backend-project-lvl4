@@ -14,4 +14,4 @@ $ make setup
 $ make start
 # Open localhost:5000
 ```
-https://task-manager-pavel-butorin.herokuapp.com/
+https://fast-lake-97911.herokuapp.com/

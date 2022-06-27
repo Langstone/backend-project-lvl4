@@ -3,7 +3,7 @@
    "version": "0.1.0",
    "type": "module",
    "description": "fastify-nodejs-application",
-   "main": "src/index.js",
+   "main": "server/plugin.js",
    "engines": {
       "node": ">=16.x"
    },

@@ -12,6 +12,6 @@ $ make setup
 
 ```sh
 $ make start
-# Open localhost:5000
+# Open localhost:3000
 ```
 https://fast-lake-97911.herokuapp.com/

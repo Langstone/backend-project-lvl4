@@ -23,11 +23,11 @@ describe('test users CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
-    await knex.migrate.latest();
-    await prepareData(app);
   });
 
   beforeEach(async () => {
+    await knex.migrate.latest();
+    await prepareData(app);
   });
 
   it('index', async () => {
@@ -48,6 +48,15 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it('editUser', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('editUser'),
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
   it('create', async () => {
     const params = testData.users.new;
     const response = await app.inject({
@@ -57,7 +66,6 @@ describe('test users CRUD', () => {
         data: params,
       },
     });
-
     expect(response.statusCode).toBe(302);
     const expected = {
       ..._.omit(params, 'password'),
@@ -67,10 +75,50 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
+  it('update', async () => {
+    const params = testData.users.new;
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('updateUser'),
+      payload: {
+        data: params,
+      },
+    });
+    expect(response.statusCode).toBe(302);
+    const expected = {
+      ..._.omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const user = await models.user.query().findOne({ email: params.email });
+    expect(user).toMatchObject(expected);
+  });
+
+  it('delete', async () => {
+    const params = testData.users.new;
+    const response = await app.inject({
+      method: 'DELETE',
+      url: app.reverse('deleteUser'),
+      payload: {
+        data: params,
+      },
+    });
+    expect(response.statusCode).toBe(302);
+    const expected = {
+      ..._.omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const user = await models.user.query().findOne({ email: params.email });
+    expect(user).toMatchObject(expected);
+  })
+
   afterEach(async () => {
+    const deleteAllTables = async (app) => {
+      await app.objection.knex('users').del();
+    };
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
     // await knex.migrate.rollback();
+    await deleteAllTables(app);
   });
 
   afterAll(async () => {

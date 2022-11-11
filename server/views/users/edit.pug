@@ -1,0 +1,12 @@
+extends ../layouts/application.pug
+
+block header
+  = t('views.users.changeUser')
+
+block content
+  +formFor()(action=route('updateUser', { id: user.id }) method='post')
+    +input(errors, t('views.users.firstName'), user.firstName, user)(type="text")
+    +input(errors, t('views.users.lastName'), user.lastName, user)(type="text")
+    +input(errors, t('views.users.email'), user.email, user)(type="text")
+    +input(errors, t('views.users.password'), t('views.users.password'))(type="password")
+    +buttonTo(route('users'), 'get')(class='btn btn-primary' value=t('views.users.change'))

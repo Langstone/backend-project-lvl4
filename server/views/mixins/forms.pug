@@ -1,26 +1,27 @@
 - const getInputName = (property) => `data[${property}]`
-- const getInputId = (property) => `data_${property}`
+- const getInputId = (property) => `#data_${property}`
 
 mixin formFor(entity = null)
   form&attributes(attributes)
     block
 
-mixin input(entity, propertyName, errors = {})
-  - propertyErrors = _.get(errors, propertyName)
-  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
-  - inputId = getInputId(propertyName)
-  .mb-3(class=(errors[propertyName] && 'has-danger'))
+mixin input(errors = {}, propertyName, text, entity)
+  - fieldName = t(`views.mixins.forms.${propertyName}`);
+  - classLine = 'form-control' + (_.has(errors, fieldName) ? ' is-invalid' : '')
+  - inputId = getInputId(fieldName)
+  .mb-3(class=(errors[fieldName] && 'form-control'))
     label(
       for= inputId
     )= propertyName
     input(
       id= inputId
-      name=getInputName(propertyName)
+      name=getInputName(fieldName)
       class=classLine
-      value=_.get(entity, propertyName, '')
+      value=_.get(entity, fieldName)
+      placeholder=text
     )&attributes(attributes)
-    if !_.isEmpty(propertyErrors)
-      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+    if (_.has(errors, fieldName))
+      .invalid-feedback= errors[fieldName][0].message
 
 mixin submit(form = null)
   input(class='btn btn-primary' type='submit')&attributes(attributes)
@@ -29,3 +30,9 @@ mixin buttonTo(action, method)
   form(action=action, method="post")
     input(name="_method" type="hidden" value=method)
     input(type='submit')&attributes(attributes)
+
+mixin button(action, method)
+  form(action=action, method="post")
+    input(name="_method" type="hidden" value="delete")
+    input(type='submit')&attributes(attributes)
+

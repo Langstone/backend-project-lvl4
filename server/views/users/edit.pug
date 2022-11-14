@@ -9,4 +9,4 @@ block content
     +input(errors, t('views.users.lastName'), user.lastName, user)(type="text")
     +input(errors, t('views.users.email'), user.email, user)(type="text")
     +input(errors, t('views.users.password'), t('views.users.password'))(type="password")
-    +buttonTo(route('users'), 'get')(class='btn btn-primary' value=t('views.users.change'))
+    +linkTo(route('users'), 'get')(class='btn btn-primary' value=t('views.users.change'))

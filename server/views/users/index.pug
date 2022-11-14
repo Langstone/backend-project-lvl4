@@ -18,6 +18,6 @@ block content
         td= formatDate(user.createdAt)
         td 
           <div class="btn-group">
-            +buttonTo(route('editUser', { id: user.id }), "get")(class='btn btn-primary' value=t('views.users.change'))
-            +button(route('deleteUser', { id: user.id }), "post")(class='btn btn-danger' value=t('views.users.delete'))
+            +linkTo(route('editUser', { id: user.id }), 'get')(class='btn btn-primary' value=t('views.users.change'))
+            +buttonTo(route('deleteUser', { id: user.id }), 'delete')(class='btn btn-danger' value=t('views.users.delete'))
           </div>

@@ -26,13 +26,12 @@ mixin input(errors = {}, propertyName, text, entity)
 mixin submit(form = null)
   input(class='btn btn-primary' type='submit')&attributes(attributes)
 
+mixin linkTo(action, method)
+  form(action=action, method='GET')
+    input(name='_method' type='hidden' value=method)
+    input(type='submit')&attributes(attributes)
+
 mixin buttonTo(action, method)
-  form(action=action, method="post")
-    input(name="_method" type="hidden" value=method)
+  form(action=action, method='POST')
+    input(name='_method' type='hidden' value=method)
     input(type='submit')&attributes(attributes)
-
-mixin button(action, method)
-  form(action=action, method="post")
-    input(name="_method" type="hidden" value="delete")
-    input(type='submit')&attributes(attributes)
-

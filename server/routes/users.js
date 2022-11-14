@@ -15,6 +15,7 @@ export default (app) => {
     })
     .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
       if (!req.isAuthenticated(req, reply)) {
+        req.flash('error', i18next.t('flash.users.authorizationError'));
         return reply;
       }
   
@@ -30,6 +31,7 @@ export default (app) => {
     })
     .post('/users/:id', { name: 'updateUser' }, async (req, reply) => {
       if(!req.isAuthenticated(req, reply)) {
+        req.flash('error', i18next.t('flash.users.authorizationError'));
         return reply;
       }
 

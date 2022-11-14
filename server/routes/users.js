@@ -16,6 +16,7 @@ export default (app) => {
     .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
       if (!req.isAuthenticated(req, reply)) {
         req.flash('error', i18next.t('flash.users.authorizationError'));
+        reply.redirect(app.reverse('users'));
         return reply;
       }
   

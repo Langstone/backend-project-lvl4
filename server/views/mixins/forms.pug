@@ -35,3 +35,7 @@ mixin linkTo(action, method)
   form(action=action, method='GET')
     input(name='_method' type='hidden' value=method)
     input(type='submit')&attributes(attributes)
+
+mixin submitChange(form = null)
+  input(class='btn btn-primary' type='submit')
+  input(name='_method' type='hidden' value='patch')

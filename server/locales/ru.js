@@ -2,7 +2,7 @@
 
 export default {
   translation: {
-    appName: 'Fastify Шаблон',
+    appName: 'Менеджер задач',
     flash: {
       session: {
         create: {
@@ -25,6 +25,10 @@ export default {
         authorizationError: 'Вы не можете редактировать или удалять другого пользователя',
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
+      statuses: {
+        deleteStatus: 'Статус успешно удален',
+        deleteError: 'Не удалось удалить статус',
+      }
     },
     layouts: {
       application: {
@@ -71,8 +75,25 @@ export default {
           Фамилия: 'lastName',
           Email: 'email',
           Пароль: 'password',
+          Наименование: 'name',
         },
       },
+      statuses: {
+        id: 'ID',
+        statuses: 'Статусы',
+        creationStatus: 'Создание статуса',
+        name: 'Наименование',
+        create: 'Создать',
+        createStatus: 'Создать статус',
+        createdAt: 'Дата создания',
+        successfullyCreated: 'Статус успешно создан',
+        createError: 'Не удалось создать статус',
+        edit: 'Изменение статуса',
+        change: 'Изменить',
+        delete: 'Удалить',
+        updateSuccess: 'Статус успешно изменен',
+        updateError: 'Не удалось изменить статус',
+      }
     },
   },
 };

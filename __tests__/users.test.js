@@ -51,17 +51,17 @@ describe('test users CRUD', () => {
   it('editUser', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('editUser'),
+      url: '/users/1/edit',
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
   });
 
   it('create', async () => {
     const params = testData.users.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('users'),
+      url: 'users',
       payload: {
         data: params,
       },
@@ -76,10 +76,26 @@ describe('test users CRUD', () => {
   });
 
   it('update', async () => {
-    const params = testData.users.new;
-    const response = await app.inject({
+    const params = testData.users.existing;
+    const responseSignIn = await app.inject({
       method: 'POST',
-      url: app.reverse('updateUser'),
+      url: '/session',
+      payload: {
+        data: {
+          email: 'lawrence.kulas87@outlook.com',
+          password: 'O6AvLIQL1cbzrre',
+        },
+      }
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: '/users/15',
+      cookies: cookie,
       payload: {
         data: params,
       },
@@ -94,34 +110,44 @@ describe('test users CRUD', () => {
   });
 
   it('delete', async () => {
-    const params = testData.users.new;
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: '/session',
+      payload: {
+        data: {
+          email: 'lawrence.kulas87@outlook.com',
+          password: 'O6AvLIQL1cbzrre',
+        },
+      }
+    });
+
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+
     const response = await app.inject({
       method: 'DELETE',
-      url: app.reverse('deleteUser'),
-      payload: {
-        data: params,
-      },
+      url: '/users/18',
+      cookies: cookie,
     });
     expect(response.statusCode).toBe(302);
-    const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
-    };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const users = await models.user.query().findById(18);
+    expect(users).toEqual(undefined);
   })
 
   afterEach(async () => {
-    const deleteAllTables = async (app) => {
-      await app.objection.knex('users').del();
-    };
+    // const deleteAllTables = async (app) => {
+    //   await app.objection.knex('users').del();
+    // };
+    // await deleteAllTables(app);
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
     // await knex.migrate.rollback();
-    await deleteAllTables(app);
+    await knex('users').truncate();
   });
 
   afterAll(async () => {
+    // await knex.migrate.rollback();
     await app.close();
   });
 });

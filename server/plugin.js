@@ -22,7 +22,7 @@ import ru from './locales/ru.js';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
 import * as knexConfig from '../knexfile.js';
-import models from './models/index.js';
+import models from './models/index.cjs';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));

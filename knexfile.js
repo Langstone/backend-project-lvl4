@@ -35,38 +35,3 @@ export const test = {
   // debug: true,
   migrations,
 };
-
-// export const production = {
-//   client: 'sqlite3',
-//   connection: {
-//     filename: './database.sqlite',
-//   },
-//   useNullAsDefault: true,
-//   migrations,
-// };
-
-// export const development = {
-//   client: 'sqlite3',
-//   connection: {
-//     filename: './database.sqlite',
-//   },
-//   useNullAsDefault: true,
-//   migrations,
-// };
-
-// export const test = {
-//   client: 'sqlite3',
-//   connection: ':memory:',
-//   useNullAsDefault: true,
-//   // debug: true,
-//   migrations,
-// };
-
-// export const production = {
-//   client: 'sqlite3',
-//   connection: {
-//     filename: './database.sqlite',
-//   },
-//   useNullAsDefault: true,
-//   migrations,
-// };

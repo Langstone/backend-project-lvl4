@@ -18,3 +18,10 @@ export const prepareData = async (app) => {
   // получаем данные из фикстур и заполняем БД
   await knex('users').insert(getFixtureData('users.json'));
 };
+
+export const prepareDataForStatuses = async (app) => {
+  const { knex } = app.objection;
+
+  // получаем данные из фикстур и заполняем БД
+  await knex('users').insert(getFixtureData('users.json'));
+};

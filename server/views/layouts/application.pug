@@ -20,6 +20,8 @@ html(lang="en")
                 a.nav-link(href=route('users'))= t('layouts.application.users')
           ul.navbar-nav
             if isAuthenticated()
+              li.nav-item 
+                +linkTo(route('statuses'), 'get')(class="btn nav-link" value=t('views.statuses.statuses'))
               li.nav-item
                 +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
             else
@@ -40,3 +42,6 @@ html(lang="en")
     footer
       .container.my-5.pt-4.border-top
         a(target="_blank" href="https://ru.hexlet.io") Hexlet
+
+
+//- a.nav-link(href=route('statuses'))= t('views.statuses.statuses')

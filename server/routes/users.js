@@ -15,8 +15,8 @@ export default (app) => {
     })
     .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
       if (!req.isAuthenticated(req, reply)) {
-        req.flash('error', i18next.t('flash.users.authorizationError'));
-        reply.redirect(app.reverse('users'));
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect('/');
         return reply;
       }
   
@@ -30,9 +30,10 @@ export default (app) => {
       reply.render('users/edit', { user });
       return reply;
     })
-    .post('/users/:id', { name: 'updateUser' }, async (req, reply) => {
+    .patch('/users/:id', { name: 'updateUser' }, async (req, reply) => {
       if(!req.isAuthenticated(req, reply)) {
-        req.flash('error', i18next.t('flash.users.authorizationError'));
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect('/');
         return reply;
       }
 
@@ -59,7 +60,7 @@ export default (app) => {
         const validUser = await app.objection.models.user.fromJson(req.body.data);
         await app.objection.models.user.query().insert(validUser);
         req.flash('info', i18next.t('flash.users.create.success'));
-        reply.redirect(app.reverse('root'));
+        reply.redirect('/');
       } catch ({ data }) {
         req.flash('error', i18next.t('flash.users.create.error'));
         reply.render('users/new', { user, errors: data });
@@ -69,8 +70,8 @@ export default (app) => {
     })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
       if(!req.isAuthenticated(req, reply)) {
-        req.flash('error', i18next.t('flash.session.delete.success'));
-        reply.redirect(app.reverse('users'));
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect('/');
         return reply;
       }
 
@@ -82,7 +83,6 @@ export default (app) => {
       }
 
       try {
-        console.log(req.user.id);
         await app.objection.models.user.query().deleteById(id);
         await req.logOut();
         req.flash('success', i18next.t('flash.users.delete'));

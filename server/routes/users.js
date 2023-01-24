@@ -42,8 +42,8 @@ export default (app) => {
         req.flash('success', i18next.t('flash.users.edit'));
         reply.redirect(app.reverse('users'));
       } catch (data) {
-          req.flash('error', i18next.t('flash.users.editError'));
-          reply.render('users/edit', { user, errors: data.data });
+        req.flash('error', i18next.t('flash.users.editError'));
+        reply.render('users/edit', { user, errors: data.data });
       }
       return reply;
     })
@@ -78,7 +78,7 @@ export default (app) => {
         await req.logOut();
         req.flash('success', i18next.t('flash.users.delete'));
       } catch (data) {
-          req.flash('error', i18next.t('flash.users.deleteError'));
+        req.flash('error', i18next.t('flash.users.deleteError'));
       }
       reply.redirect(app.reverse('users'));
       return reply;

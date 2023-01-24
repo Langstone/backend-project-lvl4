@@ -40,8 +40,8 @@ export default (app) => {
         req.flash('success', i18next.t('views.statuses.updateSuccess'));
         reply.redirect('/statuses');
       } catch (error) {
-          req.flash('error', i18next.t('views.statuses.updateError'));
-          reply.render('/statuses/edit', { status: { id, ...req.body.data }, errors: error.data });
+        req.flash('error', i18next.t('views.statuses.updateError'));
+        reply.render('/statuses/edit', { status: { id, ...req.body.data }, errors: error.data });
       }
       return reply;
     })
@@ -56,8 +56,8 @@ export default (app) => {
         req.flash('success', i18next.t('views.statuses.successfullyCreated'));
         reply.redirect('/statuses');
       } catch (error) {
-          req.flash('error', i18next.t('views.statuses.createError'));
-          reply.render('/statuses/new', { errors: error });
+        req.flash('error', i18next.t('views.statuses.createError'));
+        reply.render('/statuses/new', { errors: error });
       }
       return reply;
     })
@@ -71,7 +71,7 @@ export default (app) => {
         await app.objection.models.taskStatus.query().deleteById(id);
         req.flash('success', i18next.t('flash.statuses.deleteStatus'));
       } catch (data) {
-          req.flash('error', i18next.t('flash.statuses.deleteError'));
+        req.flash('error', i18next.t('flash.statuses.deleteError'));
       }
       reply.redirect(app.reverse('statuses'));
       return reply;

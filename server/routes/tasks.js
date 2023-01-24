@@ -252,25 +252,15 @@ export default (app) => {
       return reply;
     })
     .delete('/tasks/:id', { name: 'deleteTask' }, async (req, reply) => {
-      if (!req.isAuthenticated(req, reply)) {
-        req.flash('error', i18next.t('views.users.authorizationError'));
-        return reply;
-      }
-      const tasks = await app.objection.models.task.query();
-      const { id } = req.params;
-      const taskId = await tasks.find((task) => task.id === id);
-      if (parseInt(req.user.id, 10) !== parseInt(taskId.creatorId, 10)) {
-        req.flash('error', i18next.t('flash.tasks.authorizationError'));
+      const task = await app.objection.models.task.query().findById(req.params.id);
+      if (task.creatorId !== req.user.id) {
+        req.flash('error', i18next.t('flash.task.delete.error'));
         reply.redirect(app.reverse('tasks'));
         return reply;
       }
-      try {
-        await app.objection.models.tasksLabels.query().delete().where('taskId', '=', `${id}`);
-        await app.objection.models.task.query().deleteById(id);
-        req.flash('success', i18next.t('flash.tasks.deleteTask'));
-      } catch (data) {
-        req.flash('error', i18next.t('flash.tasks.deleteError'));
-      }
+      await task.$relatedQuery('labels').unrelate();
+      await task.$query().delete();
+      req.flash('info', i18next.t('flash.task.delete.success'));
       reply.redirect(app.reverse('tasks'));
       return reply;
     });

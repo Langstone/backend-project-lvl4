@@ -5,7 +5,7 @@ import fastify from 'fastify';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
 import {
-  truncateAllTables, getTestData, prepareData, signIn
+  truncateAllTables, getTestData, prepareData, signIn,
 } from './helpers/index.js';
 
 describe('test users CRUD', () => {

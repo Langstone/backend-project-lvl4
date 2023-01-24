@@ -37,7 +37,7 @@ export default {
       labels: {
         deleteLabel: 'Метка успешно удалена',
         deleteError: 'Не удалось удалить метку',
-      }
+      },
     },
     layouts: {
       application: {
@@ -142,7 +142,7 @@ export default {
         delete: 'Удалить',
         edit: 'Изменение метки',
         updateSuccess: 'Метка успешно изменена',
-      }
+      },
     },
   },
 };

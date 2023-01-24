@@ -5,7 +5,7 @@ import i18next from 'i18next';
 export default (app) => {
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
-      const users = await app.objection.models.user.query()
+      const users = await app.objection.models.user.query();
       reply.render('users/index', { users });
       return reply;
     })
@@ -41,10 +41,9 @@ export default (app) => {
         await user.$query().patch(req.body.data);
         req.flash('success', i18next.t('flash.users.edit'));
         reply.redirect(app.reverse('users'));
-      }
-      catch (data) {
-        req.flash('error', i18next.t('flash.users.editError'));
-        reply.render(`users/edit`, { user, errors: data.data });
+      } catch (data) {
+          req.flash('error', i18next.t('flash.users.editError'));
+          reply.render('users/edit', { user, errors: data.data });
       }
       return reply;
     })
@@ -78,11 +77,10 @@ export default (app) => {
         await app.objection.models.user.query().deleteById(id);
         await req.logOut();
         req.flash('success', i18next.t('flash.users.delete'));
-      }
-      catch (data) {
-        req.flash('error', i18next.t('flash.users.deleteError'));
+      } catch (data) {
+          req.flash('error', i18next.t('flash.users.deleteError'));
       }
       reply.redirect(app.reverse('users'));
       return reply;
-    })
+    });
 };

@@ -3,18 +3,18 @@ import i18next from 'i18next';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      if(!req.isAuthenticated(req, reply)) {
+      if (!req.isAuthenticated(req, reply)) {
         req.flash('errors', i18next.t('flash.users.authorizationError'));
         return reply;
-      };
-      const taskStatuses = await app.objection.models.taskStatus.query()
-      const label = await app.objection.models.label.query()
+      }
+      const taskStatuses = await app.objection.models.taskStatus.query();
+      const label = await app.objection.models.label.query();
       const creatorId = await req.user.id;
-      const user = await app.objection.models.user.query()
+      const user = await app.objection.models.user.query();
       const queryStatusId = req.query['data[statusId]'];
       const queryExecutorId = req.query['data[executorId]'];
       const queryLabelId = req.query['data[labelId]'];
-      const queryCreatorId = req.query['isCreatorUser'];
+      const queryCreatorId = req.query.isCreatorUser;
       const tasksFiltred = await app.objection.models.task.query()
         .withGraphJoined('status')
         .withGraphJoined('executor')
@@ -96,30 +96,33 @@ export default (app) => {
           }
           if (queryCreatorId) {
             builder.where('creator:id', creatorId);
-            return;
           }
         });
-        const tasks = await Promise.all(tasksFiltred.map(async task => {
-        const status = await app.objection.models.taskStatus.query().findById(parseInt(task.statusId));
-        const creatorName = await app.objection.models.user.query().findById(parseInt(task.creatorId));
-        const executorName = await app.objection.models.user.query().findById(parseInt(task.executorId));
-        const label = await app.objection.models.label.query().findById(parseInt(task.labelId));
-        if (label) {
-          task.label = label.name
-        } else {
-          task.label= '';
-        }
-        if (executorName) {
-          task.executorName = `${executorName.firstName} ${executorName.lastName}`;
-        } else {
-          task.executorName = '';
-        }
-        task.status = status.name;
-        task.creatorName = `${creatorName.firstName} ${creatorName.lastName}`;
-        return task;
-        }));
-        reply.render('/tasks/index', { taskStatuses, label, user, tasks });
-        return reply;
+      const tasks = await Promise.all(tasksFiltred.map(async (task) => {
+      const status = await app.objection.models.taskStatus.query()
+        .findById(parseInt(task.statusId));
+      const creatorName = await app.objection.models.user.query()
+        .findById(parseInt(task.creatorId));
+      const executorName = await app.objection.models.user.query()
+        .findById(parseInt(task.executorId));
+      const labelId = await app.objection.models.label.query()
+        .findById(parseInt(task.labelId));
+      if (labelId) {
+        task.labelId = labelId.name
+      } else {
+        task.labelId= '';
+      }
+      if (executorName) {
+        task.executorName = `${ executorName.firstName } ${ executorName.lastName }`;
+      } else {
+        task.executorName = '';
+      }
+      task.status = status.name;
+      task.creatorName = `${ creatorName.firstName } ${ creatorName.lastName }`;
+      return task;
+      }));
+      reply.render('/tasks/index', { taskStatuses, label, user, tasks });
+      return reply;
     })
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
       if (!req.isAuthenticated(req, reply)) {
@@ -138,13 +141,13 @@ export default (app) => {
         return reply;
       };
       const taskWithStringQeries = { ...req.body.data, creatorId: req.user.id };
-      const statusId = parseInt(taskWithStringQeries.statusId)
+      const statusId = parseInt(taskWithStringQeries.statusId);
       const executorId = parseInt(taskWithStringQeries.executorId);
       const labelId = parseInt(taskWithStringQeries.labelId);
       const task = { ...taskWithStringQeries, statusId, executorId, labelId };
-      const taskStatuses = await app.objection.models.taskStatus.query()
-      const user = await app.objection.models.user.query()
-      const label = await app.objection.models.label.query()
+      const taskStatuses = await app.objection.models.taskStatus.query();
+      const user = await app.objection.models.user.query();
+      const label = await app.objection.models.label.query();
       try {
         const validTask = await app.objection.models.task.fromJson(task);
         await app.objection.models.task.query().insert(validTask);
@@ -153,10 +156,9 @@ export default (app) => {
         };
         req.flash('success', i18next.t('views.tasks.successfullyCreated'));
         reply.redirect(app.reverse('tasks'));
-      } 
-      catch(error) {
-        req.flash('error', i18next.t('views.tasks.createError'));
-        reply.redirect('/tasks/new', { task, taskStatuses, user, label, errors: error.data });
+      } catch(error) {
+          req.flash('error', i18next.t('views.tasks.createError'));
+          reply.redirect('/tasks/new', { task, taskStatuses, user, label, errors: error.data });
       }
       return reply;
     })
@@ -174,42 +176,41 @@ export default (app) => {
       if (label !== undefined) {
         task.label = label.name
       } else {
-        task.label= '';
+          task.label= '';
       }
       if (executorName !== undefined) {
         task.executorName = `${executorName.firstName} ${executorName.lastName}`;
-      }
-      else {
-        task.executorName = '';
+      } else {
+          task.executorName = '';
       }
       task.status = status.name;
       task.creatorName = `${creatorName.firstName} ${creatorName.lastName}`;
       reply.render('/tasks/task', { task });
       return reply;
     })
-    .get('/tasks/:id/edit', { name: 'editTask' }, async (req, reply ) => {
+    .get('/tasks/:id/edit', { name: 'editTask' }, async (req, reply) => {
       if (!req.isAuthenticated(req, reply)) {
-          req.flash('error', i18next.t('views.users.authorizationError'));
-          return reply;
+        req.flash('error', i18next.t('views.users.authorizationError'));
+        return reply;
       };
       const { id } = req.params;
-      const taskStatuses = await app.objection.models.taskStatus.query()
-      const user = await app.objection.models.user.query()
-      const label = await app.objection.models.label.query()
+      const taskStatuses = await app.objection.models.taskStatus.query();
+      const user = await app.objection.models.user.query();
+      const label = await app.objection.models.label.query();
       const task = await app.objection.models.task.query().findById(id);
-      reply.render('/tasks/edit', { task, taskStatuses, user, label});
+      reply.render('/tasks/edit', { task, taskStatuses, user, label });
       return reply;
     })
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
-      if(!req.isAuthenticated(req, reply)) {
+      if (!req.isAuthenticated(req, reply)) {
         req.flash('error', i18next.t('views.users.authorizationError'));
         return reply;
       };
       const { id } = req.params;
       const task = new app.objection.models.task();
-      const taskStatuses = await app.objection.models.taskStatus.query()
-      const user = await app.objection.models.user.query()
-      const label = await app.objection.models.label.query()
+      const taskStatuses = await app.objection.models.taskStatus.query();
+      const user = await app.objection.models.user.query();
+      const label = await app.objection.models.label.query();
       task.$set({ id, ...req.body.data });
       try {
         const request = req.body.data;
@@ -219,11 +220,9 @@ export default (app) => {
         await task.$query().findById(id).patch(request);
         req.flash('success', i18next.t('views.statuses.updateSuccess'));
         reply.redirect(app.reverse('tasks'));
-      }
-      catch (error) {
-        console.log(error)
-        req.flash('error', i18next.t('views.tasks.updateError'));
-        reply.redirect('/tasks/edit', { user, taskStatuses, label, task: { id, ...req.body.data }, errors: error.data });
+      } catch (error) {
+          req.flash('error', i18next.t('views.tasks.updateError'));
+          reply.redirect('/tasks/edit', { user, taskStatuses, label, task: { id, ...req.body.data }, errors: error.data });
       }
       return reply;
     })
@@ -241,14 +240,13 @@ export default (app) => {
         return reply;
       };
       try {
-        await app.objection.models.tasksLabels.query().delete().where('taskId', '=', `${id}` )
+        await app.objection.models.tasksLabels.query().delete().where('taskId', '=', `${id}`);
         await app.objection.models.task.query().deleteById(id);
         req.flash('success', i18next.t('flash.tasks.deleteTask'));
-      }
-      catch(data) {
-        req.flash('error', i18next.t('flash.tasks.deleteError'));
+      } catch(data) {
+          req.flash('error', i18next.t('flash.tasks.deleteError'));
       }
       reply.redirect(app.reverse('tasks'));
       return reply;
-    })
+    });
 };

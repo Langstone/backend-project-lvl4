@@ -23,6 +23,47 @@ mixin input(errors = {}, propertyName, text, entity)
     if (_.has(errors, fieldName))
       .invalid-feedback= errors[fieldName][0].message
 
+mixin select(errors = {}, property, entity)
+  - fieldName = t(`views.mixins.forms.${property}`)
+  - classLine = 'form-select' + (_.has(errors, fieldName) ? ' is-invalid' : '')
+  - inputId = getInputId(fieldName)
+  .mb-3
+    if (property.length !== 0)
+      label(for= inputId)= property
+    if (property.length = 0)
+      label= ''
+    select(
+      id= inputId
+      name= getInputName(fieldName)
+      class= classLine)&attributes(attributes)
+      option(selected disabled hidden)
+      each essence in entity
+        if (entity == taskStatuses)
+          option(value=essence.id) #{essence.name}
+        if (entity == user)
+          option(value=essence.id) #{essence.firstName} #{essence.lastName}
+        if (entity == label)
+          option(value=essence.id) #{essence.name}
+    if (_.has(errors, fieldName))
+      .invalid-feedback= errors[fieldName][0].message
+
+mixin selectIndex(errors = {}, property, entity)
+  - fieldName = t(`views.mixins.forms.${property}`)
+  - classLine = 'form-select' + (_.has(errors, fieldName) ? ' is-invalid' : '')
+  - inputId = getInputId(fieldName)
+  select(
+    id= inputId
+    name= getInputName(fieldName)
+    class= classLine)&attributes(attributes)
+    option(selected disabled hidden)
+    each essence in entity
+      if (entity == taskStatuses)
+        option(value=essence.id) #{essence.name}
+      if (entity == user)
+        option(value=essence.id) #{essence.firstName} #{essence.lastName}
+      if (entity == label)
+        option(value=essence.id) #{essence.name}
+
 mixin submit(form = null)
   input(class='btn btn-primary' type='submit')&attributes(attributes)
 
@@ -37,5 +78,9 @@ mixin linkTo(action, method)
     input(type='submit')&attributes(attributes)
 
 mixin submitChange(form = null)
-  input(class='btn btn-primary' type='submit')
-  input(name='_method' type='hidden' value='patch')
+  form(action=action, method='POST')
+    input(name='_method' type='hidden' value='patch')
+    input(type='submit')&attributes(attributes)
+
+mixin link(ref, name)
+  a(href=ref) #{name}

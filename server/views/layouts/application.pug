@@ -22,6 +22,10 @@ html(lang="en")
             if isAuthenticated()
               li.nav-item 
                 +linkTo(route('statuses'), 'get')(class="btn nav-link" value=t('views.statuses.statuses'))
+              li.nav-item 
+                +linkTo(route('labels'), 'get')(class="btn nav-link" value=t('views.labels.labels'))
+              li.nav-item
+                +linkTo(route('tasks'), 'get')(class="btn nav-link" value=t('views.tasks.tasks'))
               li.nav-item
                 +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
             else
@@ -42,6 +46,3 @@ html(lang="en")
     footer
       .container.my-5.pt-4.border-top
         a(target="_blank" href="https://ru.hexlet.io") Hexlet
-
-
-//- a.nav-link(href=route('statuses'))= t('views.statuses.statuses')

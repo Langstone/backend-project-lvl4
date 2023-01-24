@@ -76,7 +76,7 @@ export default (app) => {
       }
 
       const { id } = req.params;
-      if(String(req.user.id) !== id) {
+      if (String(req.user.id) !== id) {
         req.flash('error', i18next.t('flash.users.authorizationError'));
         reply.redirect(app.reverse('users'));
         return reply;

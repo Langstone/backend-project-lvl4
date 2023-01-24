@@ -1,0 +1,13 @@
+extends ../layouts/application.pug
+
+block header
+    =t('views.tasks.creationTask')
+
+block content
+    +formFor()(action=route('tasks') method='post')
+        +input(errors, t('views.tasks.name'), '', task)(type='text')
+        +input(errors, t('views.tasks.description'), '', task)(type='text')
+        +select(errors, t('views.tasks.statusId'), taskStatuses)
+        +select(errors, t('views.tasks.executorId'), user)
+        +select(errors, t('views.labels.labels'), label)(multiple)
+        +submit(task)(value=t('views.tasks.create'))

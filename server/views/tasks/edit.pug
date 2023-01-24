@@ -1,0 +1,13 @@
+extends ../layouts/application.pug
+
+block header
+    =t('views.tasks.editTask')
+
+block content
+    +formFor()(action=route('updateTask', { id: task.id }) method='post')
+        +input(errors, t('views.tasks.name'), '', task)(type='text')
+        +input(errors, t('views.tasks.description'), '', task)(type='text')
+        +select(errors, t('views.tasks.statusId'), taskStatuses)(type='checkbox')
+        +select(errors, t('views.tasks.executorId'), user)(type='checkbox')
+        +select(errors, t('views.labels.labels'), label)(multiple)
+        +submitChange(task)(class='btn btn-primary' value=t('views.tasks.edit'))

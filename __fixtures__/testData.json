@@ -1,16 +1,51 @@
 {
-  "users": {
-    "new": {
-      "firstName": "Malika",
-      "lastName": "Hodkiewicz",
-      "email": "malika_hodkiewicz75@live.com",
-      "password": "RLJvaIgPOnX5r03"
+    "users": {
+      "new": {
+        "firstName": "Malika",
+        "lastName": "Hodkiweicz",
+        "email": "malika_hodkiewicz75@live.com",
+        "password": "RLJvaIgPOnX5r03"
+      },
+      "existing": {
+        "email": "lawrence.kulas87@outlook.com",
+        "password": "O6AvLIQL1cbzrre"
+      },
+      "deleted": {
+        "email": "batbondik0@gmail.com",
+        "password": "1q2w3e"
+      }
     },
-    "existing": {
-      "firstName": "Lawrence",
-      "lastName": "Kulase",
-      "email": "lawrence.kulas87@outlook.com",
-      "password": "O6AvLIQL1cbzrre"
+    "statuses": {
+      "new": {
+        "name": "paused"
+      },
+      "existing": {
+        "name": "assigned"
+      }
+    },
+    "labels": {
+      "new": {
+        "name": "urgent"
+      },
+      "existing": {
+        "name": "bug"
+      }
+    },
+    "tasks": {
+      "new": {
+        "name": "Task new",
+        "discription": "description task new",
+        "statusId": 1,
+        "creatorId": 2,
+        "executorId": 3,
+        "labelId": 1
+      },
+      "existing": {
+        "name": "lool kek",
+        "statusId": 1,
+        "executorId": 2,
+        "creatorId": 2,
+        "description": "shmth new"
+      }
     }
   }
-}

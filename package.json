@@ -9,7 +9,7 @@
    },
    "scripts": {
       "prebuild": "rm -rf dist",
-      "test": "jest --verbose --runInBand",
+      "test": "jest --verbose --ci",
       "build": "webpack",
       "start": "fastify start server/plugin.js -a 0.0.0.0 -l debug -P",
       "migrate": "knex migrate:latest --knexfile knexfile.js"
@@ -59,6 +59,7 @@
       "point-of-view": "^5.3.0",
       "pug": "^3.0.2",
       "qs": "^6.10.3",
+      "simple-knex-fixtures": "^2.0.3",
       "sqlite3": "^5.0.8",
       "webpack": "^5.72.1"
    },

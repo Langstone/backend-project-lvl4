@@ -2,10 +2,9 @@
 
 import _ from 'lodash';
 import fastify from 'fastify';
-
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareData } from './helpers/index.js';
+import { truncateAllTables, getTestData, prepareData, signIn } from './helpers/index.js';
 
 describe('test users CRUD', () => {
   let app;
@@ -14,19 +13,17 @@ describe('test users CRUD', () => {
   const testData = getTestData();
 
   beforeAll(async () => {
-    app = fastify({ logger: { prettyPrint: true } });
+    app = fastify({
+      exposeHeadRoutes: false,
+      logger: { target: 'pino-pretty' },
+    });
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-
-    // TODO: пока один раз перед тестами
-    // тесты не должны зависеть друг от друга
-    // перед каждым тестом выполняем миграции
-    // и заполняем БД тестовыми данными
+    await knex.migrate.latest();
   });
 
   beforeEach(async () => {
-    await knex.migrate.latest();
     await prepareData(app);
   });
 
@@ -48,24 +45,16 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('editUser', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: '/users/1/edit',
-    });
-
-    expect(response.statusCode).toBe(302);
-  });
-
   it('create', async () => {
     const params = testData.users.new;
     const response = await app.inject({
       method: 'POST',
-      url: 'users',
+      url: app.reverse('users'),
       payload: {
         data: params,
       },
     });
+
     expect(response.statusCode).toBe(302);
     const expected = {
       ..._.omit(params, 'password'),
@@ -75,79 +64,67 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
-  it('update', async () => {
-    const params = testData.users.existing;
-    const responseSignIn = await app.inject({
-      method: 'POST',
-      url: '/session',
-      payload: {
-        data: {
-          email: 'lawrence.kulas87@outlook.com',
-          password: 'O6AvLIQL1cbzrre',
-        },
-      }
+  it('edit', async () => {
+    const cookies = await signIn(app, testData.users.existing);
+
+    const currentUser = await models.user.query()
+      .findOne({ email: testData.users.existing.email });
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('editUser', { id: currentUser.id }),
+      cookies,
     });
 
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value };
+    expect(response.statusCode).toBe(200);
+  });
 
+  it('update', async () => {
+    const cookies = await signIn(app, testData.users.existing);
+
+    const currentUser = await models.user.query()
+      .findOne({ email: testData.users.existing.email });
+    const params = testData.users.new;
     const response = await app.inject({
       method: 'PATCH',
-      url: '/users/15',
-      cookies: cookie,
+      url: app.reverse('updateUser', { id: currentUser.id }),
+      cookies,
       payload: {
         data: params,
       },
     });
+
     expect(response.statusCode).toBe(302);
     const expected = {
       ..._.omit(params, 'password'),
       passwordDigest: encrypt(params.password),
     };
-    const user = await models.user.query().findOne({ email: params.email });
+    const user = await models.user.query().findById(currentUser.id);
     expect(user).toMatchObject(expected);
   });
 
   it('delete', async () => {
-    const responseSignIn = await app.inject({
-      method: 'POST',
-      url: '/session',
-      payload: {
-        data: {
-          email: 'lawrence.kulas87@outlook.com',
-          password: 'O6AvLIQL1cbzrre',
-        },
-      }
-    });
+    const cookie = await signIn(app, testData.users.deleted);
 
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value };
+    const currentUser = await models.user.query()
+      .findOne({ email: testData.users.deleted.email });
 
     const response = await app.inject({
       method: 'DELETE',
-      url: '/users/18',
+      url: app.reverse('deleteUser', { id: currentUser.id }),
       cookies: cookie,
     });
+
     expect(response.statusCode).toBe(302);
-    const users = await models.user.query().findById(18);
-    expect(users).toEqual(undefined);
-  })
+    const user = await models.user.query().findById(currentUser.id);
+
+    expect(user).toBeUndefined();
+  });
 
   afterEach(async () => {
-    // const deleteAllTables = async (app) => {
-    //   await app.objection.knex('users').del();
-    // };
-    // await deleteAllTables(app);
-    // Пока Segmentation fault: 11
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
-    await knex('users').truncate();
+    await truncateAllTables(app);
   });
 
   afterAll(async () => {
-    // await knex.migrate.rollback();
     await app.close();
   });
 });

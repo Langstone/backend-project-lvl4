@@ -6,4 +6,4 @@ block header
 block content
     +formFor()(action=route('updateStatus', { id: status.id } ) method='post')
         +input(errors, t('views.statuses.name'), status.name, status)(type="text")
-        +submitChange(status)(value=t('views.statuses.change'))
+        +submitChange(status)(class='btn btn-primary' value=t('views.statuses.change'))

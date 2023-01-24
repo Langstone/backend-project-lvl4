@@ -21,4 +21,4 @@ module.exports = class TaskStatus extends unique(BaseModel) {
             },
         };
     }    
-}
+};

@@ -4,7 +4,9 @@ import _ from 'lodash';
 import fastify from 'fastify';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import { truncateAllTables, getTestData, prepareData, signIn } from './helpers/index.js';
+import {
+  truncateAllTables, getTestData, prepareData, signIn
+} from './helpers/index.js';
 
 describe('test users CRUD', () => {
   let app;

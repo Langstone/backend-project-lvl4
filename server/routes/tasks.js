@@ -265,4 +265,4 @@ export default (app) => {
             reply.redirect(app.reverse('tasks'));
             return reply;
         })
-}
+};

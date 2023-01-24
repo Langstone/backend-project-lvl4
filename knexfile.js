@@ -13,7 +13,7 @@ export const production = {
   client: 'pg',
   connection: {
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false},
+    ssl: { rejectUnauthorized: false },
   },
   useNullAsDefault: true,
   migrations,
@@ -25,8 +25,8 @@ export const development = {
     filename: './database.sqlite',
   },
   pool: {
-      afterCreate: (conn, cb) =>
-        conn.run('PRAGMA foreign_keys = ON', cb),
+    afterCreate: (conn, cb) =>
+      conn.run('PRAGMA foreign_keys = ON', cb),
   },
   useNullAsDefault: true,
   migrations,

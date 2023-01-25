@@ -254,13 +254,13 @@ export default (app) => {
     .delete('/tasks/:id', { name: 'deleteTask' }, async (req, reply) => {
       const task = await app.objection.models.task.query().findById(req.params.id);
       if (task.creatorId !== req.user.id) {
-        req.flash('error', i18next.t('flash.task.delete.error'));
+        req.flash('error', i18next.t('flash.tasks.deleteError'));
         reply.redirect(app.reverse('tasks'));
         return reply;
       }
       await task.$relatedQuery('labels').unrelate();
       await task.$query().delete();
-      req.flash('info', i18next.t('flash.task.delete.success'));
+      req.flash('info', i18next.t('flash.task.deleteTask'));
       reply.redirect(app.reverse('tasks'));
       return reply;
     });

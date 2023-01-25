@@ -135,13 +135,3 @@ export default async (app, options) => {
 
   return app;
 };
-
-var Rollbar = require('rollbar')
-var rollbar = new Rollbar({
-  accessToken: 'fca91819e9414161a7bfce31048f32c7',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-})
-
-// record a generic message and send it to Rollbar
-rollbar.log('Hello world!')

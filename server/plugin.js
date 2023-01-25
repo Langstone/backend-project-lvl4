@@ -1,6 +1,5 @@
 // @ts-check
 
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fastifyStatic from 'fastify-static';
@@ -28,7 +27,6 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
-dotenv.config();
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
 

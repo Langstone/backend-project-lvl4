@@ -260,7 +260,7 @@ export default (app) => {
       }
       await task.$relatedQuery('labels').unrelate();
       await task.$query().delete();
-      req.flash('info', i18next.t('flash.task.deleteTask'));
+      req.flash('info', i18next.t('flash.tasks.deleteTask'));
       reply.redirect(app.reverse('tasks'));
       return reply;
     });

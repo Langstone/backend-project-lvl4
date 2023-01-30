@@ -20,5 +20,18 @@ module.exports = class TaskStatus extends unique(BaseModel) {
                 name: { type: 'string', minLength: 1 },
             },
         };
-    }    
+    }
+    static get relationMappings() {
+      const Task = require('./Task.cjs');
+      return {
+        tasks: {
+          relation: BaseModel.HasManyRelation,
+          modelClass: Task,
+          join: {
+            from: 'statuses.id',
+            to: 'tasks.statusId',
+          },
+        },
+      };
+    } 
 };

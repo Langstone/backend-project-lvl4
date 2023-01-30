@@ -9,5 +9,4 @@ module.exports = [
   TaskStatus,
   Task,
   Label,
-  TasksLabels,
 ];

@@ -1,6 +1,5 @@
 const BaseModel = require('./BaseModel.cjs');
 const objectionUnique = require('objection-unique');
-const { Model } = require('objection');
 
 const unique = objectionUnique({ fields: ['name'] });
 
@@ -25,7 +24,7 @@ module.exports = class Label extends unique(BaseModel) {
         const Task = require('./Task.cjs');
         return {
             task: {
-                relation: Model.ManyToManyRelation,
+                relation: BaseModel.ManyToManyRelation,
                 modelClass: Task,
                 join: {
                     from: 'labels.id',

@@ -15,3 +15,4 @@ $ make start
 # Open localhost:3000
 ```
 https://fast-lake-97911.herokuapp.com/
+Проект выложен на Railway

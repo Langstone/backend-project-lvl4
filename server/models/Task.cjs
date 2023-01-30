@@ -1,7 +1,6 @@
 const BaseModel = require('./BaseModel.cjs');
 const objectionUnique = require('objection-unique');
 const unique = objectionUnique({ fields: ['name'] });
-const { Model } = require('objection');
 
 module.exports = class Task extends unique(BaseModel) {
     static get tableName() {
@@ -25,11 +24,10 @@ module.exports = class Task extends unique(BaseModel) {
     static get relationMappings() {
         const Label = require('./Label.cjs');
         const Status = require('./TaskStatus.cjs');
-        const TasksLabels = require('./TasksLabels.cjs');
         const User = require('./User.cjs');
         return {
             status: {
-                relation: Model.HasOneRelation,
+                relation: BaseModel.HasOneRelation,
                 modelClass: Status,
                 join: {
                     from: 'tasks.statusId',
@@ -38,7 +36,7 @@ module.exports = class Task extends unique(BaseModel) {
             },
 
             label: {
-                relation: Model.HasOneRelation,
+                relation: BaseModel.HasOneRelation,
                 modelClass: Label,
                 join: {
                     from: 'tasks.labelId',
@@ -47,7 +45,7 @@ module.exports = class Task extends unique(BaseModel) {
             },
 
             executor: {
-                relation: Model.HasOneRelation,
+                relation: BaseModel.HasOneRelation,
                 modelClass: User,
                 join: {
                     from: 'tasks.executorId',
@@ -56,7 +54,7 @@ module.exports = class Task extends unique(BaseModel) {
             }, 
 
             creator: {
-                relation: Model.HasOneRelation,
+                relation: BaseModel.HasOneRelation,
                 modelClass: User,
                 join: {
                     from: 'tasks.creatorId',
@@ -65,7 +63,7 @@ module.exports = class Task extends unique(BaseModel) {
             },
             labels: {
                 relation: BaseModel.ManyToManyRelation,
-                modelClass: 'Label',
+                modelClass: Label,
                 join: {
                   from: 'tasks.id',
                   through: {
